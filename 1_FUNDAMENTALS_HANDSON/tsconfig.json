@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    /* ===============================
+       Ambiente / Target
+    =============================== */
+    "target": "ES5",
+    "lib": ["DOM", "ES2015"],
+
+    /* ===============================
+       Módulos (NAVEGADOR)
+    =============================== */
+    "module": "none",
+
+    /* ===============================
+       Estrutura de arquivos
+    =============================== */
+    "rootDir": "./",
+    "outDir": "./dist",
+
+    /* ===============================
+       Outputs
+    =============================== */
+    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+
+    /* ===============================
+       Type Checking
+    =============================== */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    /* ===============================
+       Compatibilidade com Browser
+    =============================== */
+    "skipLibCheck": true
+  },
+
+  /* ===============================
+     Arquivos incluídos
+  =============================== */
+  "include": ["index.ts"],
+
+  /* ===============================
+     Arquivos ignorados
+  =============================== */
+  "exclude": ["node_modules"]
+}
