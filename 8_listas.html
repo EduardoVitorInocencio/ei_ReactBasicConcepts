@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rocketseat - React.js - Fundamentos</title>
+</head>
+
+<body>
+  <!-- Elemento raiz da aplicação React -->
+  <div id="root"></div>
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <!-- ReactDOM -->
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel para permitir JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    function ListNames() {
+      /*
+        =========================
+        HOOK useState
+        =========================
+
+        Mesmo que o estado NÃO esteja sendo alterado,
+        usamos useState para representar um dado que
+        pertence ao estado do componente.
+
+        Isso é comum quando:
+        - Os dados podem mudar no futuro
+        - Você quer manter um padrão de arquitetura
+      */
+      const [names] = React.useState([
+        "Ana",
+        "Bruno",
+        "Carlos",
+        "Camila",
+        "Eduardo"
+      ])
+
+      /*
+        =========================
+        RENDERIZAÇÃO DE LISTAS
+        =========================
+
+        No React, para renderizar listas:
+        - Usamos métodos de array (map, filter, etc)
+        - Cada item precisa retornar JSX
+      */
+
+      return (
+        <ul>
+          {/*
+            =========================
+            MÉTODO map()
+            =========================
+
+            O map percorre o array e retorna
+            um NOVO array de elementos JSX.
+
+            Sintaxe:
+            array.map((item, index) => JSX)
+          */}
+          {names.map((name, index) => (
+            /*
+              =========================
+              PROP key
+              =========================
+
+              O que é?
+              - Uma propriedade especial do React
+              - Ajuda o React a identificar cada item da lista
+
+              Por que é importante?
+              - Performance
+              - Evita bugs durante re-renderizações
+
+              Boas práticas:
+              - Evitar usar apenas o index
+              - Preferir IDs únicos quando disponíveis
+
+              Aqui usamos:
+              `${index}-${name}`
+              para garantir maior unicidade
+            */
+            <li key={`${index}-${name}`}>
+              {name}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    /*
+      =========================
+      COMPONENTE App
+      =========================
+
+      Responsável por organizar os componentes
+      da aplicação.
+    */
+    function App() {
+      return (
+        <main>
+          <ListNames />
+        </main>
+      )
+    }
+
+    /*
+      =========================
+      RENDERIZAÇÃO NO DOM
+      =========================
+
+      O React cria uma árvore virtual (Virtual DOM)
+      e sincroniza apenas o que muda com o DOM real.
+    */
+    ReactDOM
+      .createRoot(document.getElementById('root'))
+      .render(<App />)
+  </script>
+</body>
+</html>

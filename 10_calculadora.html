@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta tags padrão -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonte usada no projeto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
+
+  <title>Rocketseat - React.js - Fundamentos</title>
+
+  <!--
+    Tailwind via CDN (modo browser)
+    ⚠️ Usado apenas para estudo / protótipos
+  -->
+  <style type="text/tailwindcss">
+    @theme {
+      /* Variáveis CSS globais (design system simples) */
+      --text: #EBEBEB;
+      --text-secondary: #6B6B6B;
+      --primary: #462878;
+      --background: #2D2A37;
+
+      --gradient: 180deg,
+        rgba(0, 0, 0, 0.05) 0%,
+        rgba(255, 255, 255, 0.05) 100%;
+
+      --gradient-hover: 180deg,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(255, 255, 255, 0.1) 100%;
+
+      --shadow: 
+        0px 11px 7px 0px rgba(0, 0, 0, 0.01),
+        0px 7px 7px 0px rgba(0, 0, 0, 0.04),
+        0px 4px 6px 0px rgba(0, 0, 0, 0.10),
+        0px 2px 4px 0px rgba(0, 0, 0, 0.26),
+        0px 0px 2px 0px rgba(0, 0, 0, 0.29),
+        0px 2px 3px 0px rgba(255, 255, 255, 0.06) inset;
+
+      --font-sans: 'Rubik', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-linear-[180deg,_#807ECE_0%,_#807ECE_100%] min-h-screen text-(--text) font-(--font-sans)">
+  <!-- Raiz onde o React será montado -->
+  <div id="root"></div>
+
+  <!-- Dependências -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Babel permite JSX direto no browser (modo estudo) -->
+  <script type="text/babel">
+
+    /*
+      VARIANTS DE TEXTO
+      ----------------
+      Objeto de configuração visual.
+      Conceito: "Design tokens" / "Variants"
+    */
+    const textVariants = {
+      default: "text-xl",
+      muted: "text-xl text-(--text-secondary)",
+      heading: "text-2xl",
+      blast: "text-3xl",
+    }
+
+    /*
+      COMPONENTE TEXT
+      ----------------
+      - Exemplo de componente altamente reutilizável
+      - Usa React.createElement para permitir "as polymorphism"
+      - Conceito: composição ao invés de repetição
+    */
+    function Text({
+      as = 'span',
+      variant = 'default',
+      className,
+      children,
+      ...props
+    }) {
+      return React.createElement(
+        as,
+        {
+          className: `${textVariants[variant]} ${className || ''}`,
+          ...props,
+        },
+        children
+      )
+    }
+
+    /*
+      VARIANTS DE BOTÃO
+      -----------------
+      Apenas mapeamento de estilos
+    */
+    const buttonVariants = {
+      default: 'bg-[var(--background)]',
+      primary: 'bg-[var(--primary)]'
+    }
+
+    /*
+      COMPONENTE BUTTON
+      -----------------
+      - Reutiliza o componente Text
+      - Demonstra composição de componentes
+    */
+    function Button({ variant = 'default', className, children, ...props }) {
+      return (
+        <Text
+          as="button"
+          variant="heading"
+          className={`
+            flex items-center justify-center rounded-xl
+            p-3 cursor-pointer
+            text-[var(--text)]
+            bg-[linear-gradient(var(--gradient))]
+            hover:bg-[linear-gradient(var(--gradient-hover))]
+            shadow-[var(--shadow)]
+            ${buttonVariants[variant]}
+            ${className ?? ''}
+          `}
+          {...props}
+        >
+          {children}
+        </Text>
+      )
+    }
+
+    /*
+      COMPONENTE CARD
+      ----------------
+      - Apenas estrutura visual
+      - Conceito: wrapper sem lógica
+    */
+    function Card({ children, className, ...props }) {
+      return (
+        <div className={`
+          bg-[var(--background)] shadow-[var(--shadow)]
+          rounded-2xl
+          ${className ?? ''}
+        `}>
+          {children}
+        </div>
+      )
+    }
+
+    /*
+      MATRIZ DE BOTÕES
+      ----------------
+      Representa o layout da calculadora
+      Conceito: UI declarativa
+    */
+    const buttons = [
+      [{ input: "CE" }, { input: "C", className: "flex-1 h-16" }, { input: "/", variant: "primary" }],
+      [{ input: "7" }, { input: "8" }, { input: "9" }, { input: "x", variant: "primary" }],
+      [{ input: "4" }, { input: "5" }, { input: "6" }, { input: "-", variant: "primary" }],
+      [{ input: "1" }, { input: "2" }, { input: "3" }, { input: "+", variant: "primary" }],
+      [{ input: "0", className: "flex-1 h-16" }, { input: "," }, { input: "=", variant: "primary", className: "w-16 h-16 bg-[#7F45E2]" }]
+    ]
+
+    /*
+      DISPLAY DA CALCULADORA
+      ----------------------
+      - Recebe dados via props
+      - NÃO possui estado próprio
+      Conceito: componente "presentational"
+    */
+    function CalculatorDisplay({ operation, result }) {
+      return (
+        <div className="flex flex-col gap-2 px-[1.375rem] cursor-default select-none">
+          <Text as="div" variant="muted" className="flex items-center justify-end h-7">
+            {result && operation}
+          </Text>
+
+          <div className="flex items-center justify-between h-9">
+            <Text variant="muted">=</Text>
+            <Text variant="blast">{result || operation}</Text>
+          </div>
+        </div>
+      )
+    }
+
+    /*
+      COMPONENTE CALCULATOR
+      ---------------------
+      Aqui está a MAIOR PARTE DA LÓGICA
+      Conceitos principais:
+      - useState
+      - controle de fluxo
+      - estado derivado
+    */
+    function Calculator({ setHistory }) {
+
+      // Estado da operação digitada
+      const [operation, setOperation] = React.useState("")
+
+      // Estado do resultado final
+      const [result, setResult] = React.useState("")
+
+      /*
+        Flag de controle de fluxo
+        -------------------------
+        NÃO é UI, é lógica
+        Serve para saber se o último input foi "="
+      */
+      const [justCalculated, setJustCalculated] = React.useState(false)
+
+      // Funções utilitárias
+      const isNumber = (value) => /\d/.test(value)
+      const isOperator = (value) => ["+", "-", "x", "/"].includes(value)
+
+      /*
+        FUNÇÃO CENTRAL DE INTERAÇÃO
+        ----------------------------
+        Todos os botões chamam esta função
+      */
+      function handleInputClick(input) {
+
+        // C → limpa tudo (inclusive histórico)
+        if (input === "C") {
+          setOperation("")
+          setResult("")
+          setHistory([])
+          setJustCalculated(false)
+          return
+        }
+
+        // CE → limpa apenas a operação atual
+        if (input === "CE") {
+          setOperation("")
+          setJustCalculated(false)
+          return
+        }
+
+        /*
+          Controle pós-cálculo
+          --------------------
+          Decide se começa nova operação ou continua
+        */
+        if (justCalculated) {
+          if (isNumber(input)) {
+            setOperation(input)
+            setResult("")
+            setJustCalculated(false)
+            return
+          }
+
+          if (isOperator(input)) {
+            setOperation(`${result}${input}`)
+            setJustCalculated(false)
+            return
+          }
+        }
+
+        // "=" → executa cálculo
+        if (input === "=") {
+          try {
+            const normalizedOperation = operation
+              .replaceAll("x", "*")
+              .replaceAll(",", ".")
+
+            const operationResult = eval(normalizedOperation)
+
+            // Salva histórico no componente pai
+            setHistory((prev) => [
+              ...prev,
+              `${operation} = ${operationResult}`
+            ])
+
+            setResult(operationResult)
+            setOperation("")
+            setJustCalculated(true)
+          } catch {
+            setResult("Erro")
+          }
+          return
+        }
+
+        // Limpa erro ao continuar digitando
+        if (result === "Erro") {
+          setResult("")
+        }
+
+        // Normaliza vírgula para ponto
+        let valueToAdd = input === "," ? "." : input
+
+        // Concatena operação
+        setOperation((prev) => prev + valueToAdd)
+      }
+
+      return (
+        <Card className="flex flex-col gap-[1.625rem] w-[22.25rem] pt-14 px-8 pb-8">
+          <CalculatorDisplay operation={operation} result={result} />
+
+          <div className="flex flex-col gap-3">
+            {buttons.map((row, index) => (
+              <div key={`row-${index}`} className="flex gap-3">
+                {row.map(button => (
+                  <Button
+                    key={button.input}
+                    className={button.className || "w-16 h-16"}
+                    variant={button.variant || "default"}
+                    onClick={() => handleInputClick(button.input)}
+                  >
+                    {button.input}
+                  </Button>
+                ))}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )
+    }
+
+    /*
+      COMPONENTE DE HISTÓRICO
+      -----------------------
+      - Apenas recebe dados
+      - Não altera estado
+    */
+    function OperationHistory({ history }) {
+      return (
+        <Card className="w-full py-10 px-8">
+          <Text as="h1" variant="heading" className="mb-4">
+            Operations History
+          </Text>
+
+          {history.length === 0 ? (
+            <Text variant="muted">Nenhuma operação realizada</Text>
+          ) : (
+            <ul className="flex flex-col gap-3">
+              {history.map((item, index) => (
+                <Text as="li" key={index}>{item}</Text>
+              ))}
+            </ul>
+          )}
+        </Card>
+      )
+    }
+
+    /*
+      COMPONENTE APP
+      --------------
+      - Estado global de histórico
+      - Demonstra "lifting state up"
+    */
+    function App() {
+      const [history, setHistory] = React.useState([])
+
+      return (
+        <main class="py-28 px-4 sm:px-10 flex flex-col sm:flex-row items-center sm:items-stretch gap-2">
+          <Calculator setHistory={setHistory} />
+          <OperationHistory history={history} />
+        </main>
+      )
+    }
+
+    // Renderização da aplicação React
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+
+  </script>
+</body>
+</html>

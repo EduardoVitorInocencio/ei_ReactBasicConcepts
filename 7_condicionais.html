@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rocketseat - React.js - Fundamentos</title>
+</head>
+
+<body>
+  <!-- Elemento raiz onde o React vai "injetar" a aplicação -->
+  <div id="root"></div>
+
+  <!-- Importação do React (biblioteca principal) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+
+  <!-- Importação do ReactDOM (responsável por renderizar no DOM) -->
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel permite escrever JSX diretamente no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    /*
+      =========================
+      O QUE SÃO HOOKS?
+      =========================
+    */
+
+    function Counter() {
+      /*
+        =========================
+        HOOK useState
+        =========================
+      */
+      const [counter, setCounter] = React.useState(0)
+
+      return (
+        <>
+          {/* O React re-renderiza automaticamente quando o estado muda */}
+          <p>Contador: {counter}</p>
+
+          {/*
+            =========================
+            RENDERIZAÇÃO CONDICIONAL
+            =========================
+
+            O que é?
+            - Renderizar elementos diferentes dependendo de uma condição.
+
+            No React, NÃO existe if direto dentro do JSX.
+            Por isso usamos:
+            - Operador ternário
+            - Operador lógico &&
+          */}
+
+          {/*
+            =========================
+            CONDICIONAL COM TERNÁRIO
+            =========================
+
+            Estrutura:
+            condição ? valorSeVerdadeiro : valorSeFalso
+
+            Quando usar?
+            - Quando sempre existe um "else"
+            - Quando você quer exibir UMA coisa ou OUTRA
+          */}
+          <p>
+            {counter > 10
+              ? 'Valor maior que 10'
+              : 'Valor menor ou igual a 10'}
+          </p>
+
+          {/*
+            =========================
+            CONDICIONAL COM &&
+            =========================
+
+            Estrutura:
+            condição && JSX
+
+            Como funciona?
+            - Se a condição for TRUE → renderiza o JSX
+            - Se for FALSE → não renderiza NADA
+
+            Quando usar?
+            - Quando NÃO existe um else
+            - Quando algo só deve aparecer em uma condição específica
+          */}
+          {counter > 50 && <p>Valor maior que 50</p>}
+
+          {/*
+            IMPORTANTE:
+            - false, null e undefined NÃO são renderizados no JSX
+            - Isso permite usar o && com segurança
+          */}
+
+          {/*
+            Atualizando o estado diretamente com um valor fixo.
+            Quando clicar, o contador sempre vai para 100.
+          */}
+          <button onClick={() => setCounter(100)}>
+            Update
+          </button>
+
+          {/*
+            Forma CORRETA de atualizar o estado baseado no valor anterior.
+
+            Por que usar prevValue?
+            - O estado no React é assíncrono
+            - Garante que você sempre trabalhe com o valor mais atualizado
+          */}
+          <button
+            onClick={() =>
+              setCounter((prevValue) => prevValue + 10)
+            }
+          >
+            Increment +10
+          </button>
+
+          <button
+            onClick={() =>
+              setCounter((prevValue) => prevValue - 10)
+            }
+          >
+            Decrement -10
+          </button>
+        </>
+      )
+    }
+
+    function App() {
+      return (
+        <main>
+          <Counter />
+        </main>
+      )
+    }
+
+    ReactDOM
+      .createRoot(document.getElementById('root'))
+      .render(<App />)
+  </script>
+</body>
+</html>

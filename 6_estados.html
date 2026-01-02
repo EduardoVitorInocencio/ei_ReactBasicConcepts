@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rocketseat - React.js - Fundamentos</title>
+</head>
+
+<body>
+  <!-- Elemento raiz onde o React vai "injetar" a aplicação -->
+  <div id="root"></div>
+
+  <!-- Importação do React (biblioteca principal) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+
+  <!-- Importação do ReactDOM (responsável por renderizar no DOM) -->
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel permite escrever JSX diretamente no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    /*
+      =========================
+      O QUE SÃO HOOKS?
+      =========================
+
+      Hooks são funções especiais do React que permitem:
+      - Usar estado
+      - Usar ciclo de vida
+      - Compartilhar lógica
+      dentro de COMPONENTES FUNCIONAIS.
+
+      Antes dos Hooks, isso só era possível com Class Components.
+
+      Exemplo de Hooks:
+      - useState
+      - useEffect
+      - useContext
+      - useMemo
+      - useCallback
+    */
+
+    function Counter() {
+      /*
+        =========================
+        HOOK useState
+        =========================
+
+        O que ele faz?
+        - Cria um estado interno para o componente.
+
+        Quando usar?
+        - Quando um valor precisa mudar ao longo do tempo
+        - Quando a interface depende desse valor
+
+        Como funciona?
+        - useState recebe um valor inicial
+        - Retorna um array com:
+          [valorAtual, funçãoParaAtualizar]
+      */
+
+      const [counter, setCounter] = React.useState(0)
+
+      /*
+        Regras dos Hooks (MUITO IMPORTANTE):
+        1. Hooks só podem ser chamados no topo do componente
+        2. Nunca usar Hooks dentro de:
+           - if
+           - for
+           - while
+           - funções internas
+        3. Hooks só podem ser usados em:
+           - Componentes React
+           - Custom Hooks
+      */
+
+      return (
+        <>
+          {/* O React re-renderiza automaticamente quando o estado muda */}
+          <p>Contador: {counter}</p>
+
+          {/*
+            Atualizando o estado diretamente com um valor fixo.
+            Quando clicar, o contador sempre vai para 100.
+          */}
+          <button onClick={() => setCounter(100)}>
+            Update
+          </button>
+
+          {/*
+            Forma CORRETA de atualizar o estado baseado no valor anterior.
+
+            Quando usar prevValue?
+            - Sempre que o novo valor depender do valor anterior.
+
+            Isso evita problemas de estado desatualizado.
+          */}
+          <button
+            onClick={() =>
+              setCounter((prevValue) => prevValue + 10)
+            }
+          >
+            Increment +10
+          </button>
+
+          <button
+            onClick={() =>
+              setCounter((prevValue) => prevValue - 10)
+            }
+          >
+            Decrement -10
+          </button>
+        </>
+      )
+    }
+
+    /*
+      =========================
+      COMPONENTE App
+      =========================
+
+      O App normalmente é o componente raiz da aplicação.
+      Ele organiza e compõe outros componentes.
+    */
+    function App() {
+      return (
+        <main>
+          <Counter />
+        </main>
+      )
+    }
+
+    /*
+      =========================
+      RENDERIZAÇÃO DA APLICAÇÃO
+      =========================
+
+      O ReactDOM.createRoot cria a raiz da aplicação React
+      e o método render monta o componente App no DOM.
+    */
+    ReactDOM
+      .createRoot(document.getElementById('root'))
+      .render(<App />)
+  </script>
+</body>
+</html>
